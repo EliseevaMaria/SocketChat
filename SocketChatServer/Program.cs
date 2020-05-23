@@ -7,8 +7,10 @@ namespace SocketChatServer
     {
         public static void Main(string[] args)
         {
-            IWebHostBuilder builder = WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
-            builder.Build().Run();
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .Build()
+                .Run();
         }
     }
 }

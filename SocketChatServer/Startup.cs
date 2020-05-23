@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
 using SocketChatServer.Handlers;
 using SocketChatServer.Managers;
@@ -15,11 +16,6 @@ namespace SocketChatServer
         {
             services.AddTransient<ConnectionManager>();
             services.AddSingleton(typeof(IntroducingSocketHandler));
-            //foreach (Type type in Assembly.GetEntryAssembly().ExportedTypes)
-            //{
-            //    if (type.GetTypeInfo().BaseType == typeof(SocketHandlerBase))
-            //        services.AddSingleton(type);
-            //}
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,8 +29,10 @@ namespace SocketChatServer
             string path = "/ws";
             var socketHandler = serviceProvider.GetService<IntroducingSocketHandler>();
             app.Map(path, builder => builder.UseMiddleware<SocketMiddleware>(socketHandler));
-            
+
             app.UseStaticFiles();
+
+            app.UseRewriter(new RewriteOptions().AddRedirect("^.*$", "index.html"));
         }
     }
 }
