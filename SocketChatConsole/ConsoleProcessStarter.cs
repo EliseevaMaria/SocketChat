@@ -4,16 +4,9 @@ namespace SocketChatConsole
 {
     public sealed class ConsoleProcessStarter
     {
-        readonly int communicationConsolesAmount;
-
-        public ConsoleProcessStarter(int communicationConsolesAmount)
+        public void CreateComminucationConsoles(int communicationConsolesAmount)
         {
-            this.communicationConsolesAmount = communicationConsolesAmount;
-        }
-
-        public void CreateComminucationConsoles()
-        {
-            if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length >= this.communicationConsolesAmount)
+            if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length >= communicationConsolesAmount)
                 return;
 
             new Process

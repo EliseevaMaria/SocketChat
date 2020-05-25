@@ -9,15 +9,13 @@ namespace SocketChatServer.Managers
 {
     public sealed class SocketMiddleware
     {
-        private readonly RequestDelegate next;
         private readonly SocketHandlerBase handler;
 
         public SocketMiddleware(RequestDelegate next, SocketHandlerBase handler)
         {
-            this.next = next;
             this.handler = handler;
         }
-
+        
         public async Task InvokeAsync(HttpContext context)
         {
             if (!context.WebSockets.IsWebSocketRequest)

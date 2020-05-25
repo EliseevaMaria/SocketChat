@@ -6,8 +6,8 @@ namespace SocketChatConsole
     {
         static void Main(string[] args)
         {
-            int consolesCount = 3;
-            new ConsoleProcessStarter(consolesCount).CreateComminucationConsoles();
+            int consolesCount = 2;
+            new ConsoleProcessStarter().CreateComminucationConsoles(consolesCount);
             new SocketCommunicator().StartWebSockets().GetAwaiter().GetResult();
         }
     }
