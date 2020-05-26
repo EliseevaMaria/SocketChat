@@ -31,7 +31,7 @@ namespace SocketChatServer.Managers
             var buffer = new byte[1024 * 4];
             while (webSocket.State == WebSocketState.Open)
             {
-                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
                 switch (result.MessageType)
                 {

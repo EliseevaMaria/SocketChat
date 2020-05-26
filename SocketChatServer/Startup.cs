@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
 using SocketChatServer.Handlers;
 using SocketChatServer.Managers;
+using IO.Encoders;
 
 namespace SocketChatServer
 {
@@ -15,7 +16,9 @@ namespace SocketChatServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ConnectionManager>();
-            services.AddSingleton(typeof(IntroducingSocketHandler));
+
+            var socketHandler = new IntroducingSocketHandler(new ConnectionManager(), new Utf8MessageEncoder());
+            services.AddSingleton(typeof(IntroducingSocketHandler), socketHandler);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

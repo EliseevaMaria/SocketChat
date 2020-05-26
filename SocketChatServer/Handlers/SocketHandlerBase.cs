@@ -1,10 +1,9 @@
-﻿using Models;
+﻿using IO.Encoders;
 using SocketChatServer.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +12,13 @@ namespace SocketChatServer.Handlers
     public abstract class SocketHandlerBase
     {
         protected ConnectionManager ConnectionManager { get; set; }
-        public SocketHandlerBase(ConnectionManager connectionManager) => this.ConnectionManager = connectionManager;
+        protected IMessageEncoder MessageEncoder { get; }
+
+        public SocketHandlerBase(ConnectionManager connectionManager, IMessageEncoder messageEncoder)
+        {
+            this.ConnectionManager = connectionManager;
+            this.MessageEncoder = messageEncoder;
+        }
 
         public virtual async Task OnConnected(WebSocket socket) => await Task.Run(() => this.ConnectionManager.AddSocket(socket));
         public virtual async Task OnDisconnected(WebSocket socket) => await this.ConnectionManager.RemoveUserAsync(socket);
@@ -23,7 +28,7 @@ namespace SocketChatServer.Handlers
             if (socket.State != WebSocketState.Open)
                 return;
 
-            byte[] byteMessage = Encoding.ASCII.GetBytes(message);
+            byte[] byteMessage = this.MessageEncoder.GetByteMessage(message);
             await socket.SendAsync(new ArraySegment<byte>(byteMessage, 0, message.Length),
                 WebSocketMessageType.Text, true, CancellationToken.None);
         }
@@ -35,7 +40,7 @@ namespace SocketChatServer.Handlers
                 .Select(connectionPair => connectionPair.Value.Socket).ToList();
 
             foreach (WebSocket adressee in addresseeSockets)
-                await SendMessage(adressee, message);
+                await this.SendMessage(adressee, message);
         }
 
         public abstract Task Receive(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);

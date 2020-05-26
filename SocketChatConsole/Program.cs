@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IO.Encoders;
+using IO.IOProviders;
 
 namespace SocketChatConsole
 {
@@ -6,9 +7,12 @@ namespace SocketChatConsole
     {
         static void Main(string[] args)
         {
-            int consolesCount = 2;
+            int consolesCount = 1;
             new ConsoleProcessStarter().CreateComminucationConsoles(consolesCount);
-            new SocketCommunicator().StartWebSockets().GetAwaiter().GetResult();
+
+            var messageEncoder = new Utf8MessageEncoder();
+            var consoleIOProvider = new ConsoleIOProvider();
+            new SocketCommunicator(messageEncoder, consoleIOProvider).StartWebSockets().GetAwaiter().GetResult();
         }
     }
 }
